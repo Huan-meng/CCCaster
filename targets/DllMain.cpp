@@ -1461,18 +1461,16 @@ struct DllMain
                         netMan.setRemoteRetryMenuIndex ( msg->getAs<MenuIndex>().menuIndex );
                         return;
 
-                    // We now ignore remote ChangeConfigs, since delay/rollback is now set independently
-                    // case MsgType::ChangeConfig:
-                    //     // Only use the ChangeConfig if it is for a later frame than the current ChangeConfig.
-                    //     // If for the same frame, then the host's ChangeConfig always takes priority.
-                    //     if ( ( msg->getAs<ChangeConfig>().indexedFrame.value > changeConfig.indexedFrame.value )
-                    //             || ( msg->getAs<ChangeConfig>().indexedFrame.value == changeConfig.indexedFrame.value
-                    //                  && clientMode.isClient() ) )
-                    //     {
-                    //         shouldChangeDelayRollback = true;
-                    //         changeConfig = msg->getAs<ChangeConfig>();
-                    //     }
-                    //     return;
+                    // Handle remote ChangeConfig messages for synchronized delay/rollback
+                    case MsgType::ChangeConfig:
+                        // Only use the ChangeConfig if it is for a later frame than the current ChangeConfig.
+                        // If for the same frame, then the host's ChangeConfig always takes priority.
+                        if ((msg->getAs<ChangeConfig>().indexedFrame.value > changeConfig.indexedFrame.value) || (msg->getAs<ChangeConfig>().indexedFrame.value == changeConfig.indexedFrame.value && clientMode.isClient()))
+                        {
+                            shouldChangeDelayRollback = true;
+                            changeConfig = msg->getAs<ChangeConfig>();
+                        }
+                        return;
 
                     case MsgType::TransitionIndex:
                         netMan.setRemoteIndex ( msg->getAs<TransitionIndex>().index );
