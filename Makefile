@@ -1,5 +1,5 @@
-VERSION = 3.1
-SUFFIX = .007
+VERSION = 3.Guidao
+SUFFIX = .001
 NAME = cccaster
 TAG =
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
@@ -53,7 +53,7 @@ MAIN_OBJECTS = $(MAIN_CPP_SRCS:.cpp=.o) $(CONTRIB_CC_SRCS:.cc=.o) $(CONTRIB_CPP_
 DLL_OBJECTS = $(DLL_CPP_SRCS:.cpp=.o) $(HOOK_CC_SRCS:.cc=.o) $(HOOK_C_SRCS:.c=.o) $(CONTRIB_C_SRCS:.c=.o) $(CONTRIB_CPP_SRCS:.cpp=.o)
 
 # Tool chain
-PREFIX = ../mingw32/bin/i686-w64-mingw32-
+PREFIX = ../../../msys64/mingw32/bin/i686-w64-mingw32-
 GCC = $(PREFIX)gcc
 CXX = $(PREFIX)g++
 WINDRES = windres

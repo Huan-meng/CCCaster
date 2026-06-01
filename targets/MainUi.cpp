@@ -1638,8 +1638,8 @@ static bool isOnline()
 
 void MainUi::main ( RunFuncPtr run )
 {
-    if ( _config.getInteger ( "autoCheckUpdates" ) )
-        sessionMessage = getUpdate ( true );
+    // if ( _config.getInteger ( "autoCheckUpdates" ) )
+    //     sessionMessage = getUpdate ( true );
 
     ASSERT ( _ui.get() != 0 );
 

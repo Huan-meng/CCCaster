@@ -1,5 +1,6 @@
 #include "DllNetplayManager.hpp"
 #include "DllAsmHacks.hpp"
+#include "DllOverlayUi.hpp"
 #include "ProcessManager.hpp"
 #include "Exceptions.hpp"
 #include "CharacterSelect.hpp"
@@ -703,6 +704,11 @@ void NetplayManager::setState ( NetplayState state )
         if ( state == NetplayState::Loading )
         {
             _spectateStartIndex = getIndex();
+
+            LOG("NetplayConfig: delay=%u; rollbackDelay=%u; rollback=%u",
+                config.delay, config.rollbackDelay, config.rollback);
+            DllOverlayUi::showMessage(format("NetplayConfig: delay=%u; rollback=%u; rollbackDelay=%u",
+                                             config.delay, config.rollback, config.rollbackDelay));
 
             const uint32_t newStartIndex = min ( getBufferedPreserveStartIndex(), getIndex() );
 
