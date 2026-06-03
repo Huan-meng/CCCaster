@@ -656,6 +656,9 @@ struct DllMain
                 DllOverlayUi::showMessage ( format ( "Input delay was changed to %u", changeConfig.delay ) );
                 netMan.setDelay ( changeConfig.delay );
                 procMan.ipcSend ( changeConfig );
+                // 发送给网络对手
+                if (dataSocket && dataSocket->isConnected() && !clientMode.isOffline())
+                    dataSocket->send(changeConfig);
             }
 
             if ( changeConfig.rollbackDelay < 0xFF && changeConfig.rollbackDelay != netMan.getRollbackDelay() && netMan.config.mode.isOffline() )
@@ -673,6 +676,9 @@ struct DllMain
                 netMan.setRollback ( changeConfig.rollback );
                 minRollbackSpacing = clamped<uint8_t> ( netMan.getRollback(), 2, 4 );
                 procMan.ipcSend ( changeConfig );
+                // 发送给网络对手
+                if (dataSocket && dataSocket->isConnected() && !clientMode.isOffline())
+                    dataSocket->send(changeConfig);
             }
         }
 
@@ -1078,6 +1084,13 @@ struct DllMain
             // Indicate we should sync the RngState now
             LOG( "enabling RNG sync" );
             shouldSyncRngState = true;
+
+            // 启动后台输入预取线程
+            if (!netMan.isInputPrefetchRunning())
+            {
+                LOG("Starting input prefetch thread");
+                netMan.startInputPrefetch();
+            }
         }
 
         // Entering RetryMenu
@@ -1096,6 +1109,13 @@ struct DllMain
             // If not entering RetryMenu and we're already disconnected...
             if ( !dataSocket || !dataSocket->isConnected() )
             {
+                // 停止后台输入预取线程
+                if (netMan.isInputPrefetchRunning())
+                {
+                    LOG("Stopping input prefetch thread");
+                    netMan.stopInputPrefetch();
+                }
+
                 delayedStop ( "Disconnected!" );
                 return;
             }
@@ -2032,6 +2052,12 @@ struct DllMain
     // Destructor
     ~DllMain()
     {
+        // 停止后台输入预取线程
+        if (netMan.isInputPrefetchRunning())
+        {
+            netMan.stopInputPrefetch();
+        }
+
         rollMan.deallocateStates();
 
         KeyboardManager::get().unhook();
