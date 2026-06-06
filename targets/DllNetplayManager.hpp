@@ -6,10 +6,6 @@
 
 #include <vector>
 #include <climits>
-#include <thread>
-#include <mutex>
-#include <atomic>
-#include <queue>
 
 void __stdcall ___log(const char* msg);
 
@@ -143,13 +139,6 @@ public:
     // Check if the next state transition is valid
     bool isValidNext ( NetplayState state );
 
-    // === 后台线程预取输入 ===
-    // 启动/停止输入预取线程
-    void startInputPrefetch();
-    void stopInputPrefetch();
-    // 检查预取线程是否在运行
-    bool isInputPrefetchRunning() const { return _inputPrefetchRunning.load(); }
-
     friend class DllRollbackManager;
 
 private:
@@ -245,13 +234,6 @@ private:
     std::string sanitizePlayerName( std::string name );
     void findAndReplaceAll( std::string& data, std::string toSearch, std::string replaceStr );
     std::string getISOTime();
-
-    // === 后台线程预取输入相关成员 ===
-    std::thread _inputPrefetchThread;
-    std::atomic<bool> _inputPrefetchRunning{false};
-    std::atomic<bool> _inputPrefetchShouldStop{false};
-    // 输入预取线程函数
-    void inputPrefetchLoop();
 };
 
 extern NetplayManager* netManPtr;

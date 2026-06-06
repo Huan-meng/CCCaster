@@ -1855,9 +1855,9 @@ bool MainUi::configure ( const PingStats& pingStats )
                 continue;
             }
 
-            if ( rollback )
-                _netplayConfig.rollbackDelay = menu->resultInt;
-            else
+            // if ( rollback )
+            _netplayConfig.rollbackDelay = menu->resultInt;
+                // else
                 _netplayConfig.delay = menu->resultInt;
 
             _netplayConfig.winCount = _config.getInteger ( "versusWinCount" );
