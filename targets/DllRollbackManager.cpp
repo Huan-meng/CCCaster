@@ -2,6 +2,7 @@
 #include "MemDump.hpp"
 #include "DllAsmHacks.hpp"
 #include "ErrorStringsExt.hpp"
+#include "DllOverlayUi.hpp"
 
 #include <utility>
 #include <algorithm>
@@ -154,6 +155,7 @@ bool DllRollbackManager::loadState ( IndexedFrame indexedFrame, NetplayManager& 
             if ( !netMan.config.mode.isTraining() ) {
                 rbFrames = _statesList.back().indexedFrame.value - it->indexedFrame.value;
                 LOG("Rolled back %i frames", rbFrames);
+                DllOverlayUi::showMessage(format("Rollback %d frames", rbFrames));
             }
             // Erase all other states after the current one.
             // Note: it.base() returns 1 after the position of it, but moving forward.
