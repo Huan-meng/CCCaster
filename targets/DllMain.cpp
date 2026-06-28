@@ -405,6 +405,10 @@ struct DllMain
                                      before, target, netMan.getIndexedFrame() );
 
                             LOG_SYNC ( "Reinputs: 0x%04x 0x%04x", netMan.getRawInput ( 1 ), netMan.getRawInput ( 2 ) );
+
+                            // 回滚后立即重新写入当前帧的输入到游戏内存，防止"吃键"
+                            procMan.writeGameInput(localPlayer, netMan.getInput(localPlayer));
+                            procMan.writeGameInput(remotePlayer, netMan.getInput(remotePlayer));
                             return;
                         }
 
@@ -612,6 +616,10 @@ struct DllMain
 
                 LOG_SYNC ( "Reinputs: 0x%04x 0x%04x", netMan.getRawInput ( 1 ), netMan.getRawInput ( 2 ) );
 
+                // 回滚后立即重新写入当前帧的输入到游戏内存，防止"吃键"
+                procMan.writeGameInput(localPlayer, netMan.getInput(localPlayer));
+                procMan.writeGameInput(remotePlayer, netMan.getInput(remotePlayer));
+
                 netMan.clearLastChangedFrame();
                 --rollbackTimer;
                 return;
@@ -722,12 +730,19 @@ struct DllMain
                                  before, netMan.getLastChangedFrame(), netMan.getIndexedFrame() );
 
                         LOG_SYNC ( "Reinputs: 0x%04x 0x%04x", netMan.getRawInput ( 1 ), netMan.getRawInput ( 2 ) );
+
+                        // 回滚后立即重新写入当前帧的输入到游戏内存，防止"吃键"
+                        procMan.writeGameInput(localPlayer, netMan.getInput(localPlayer));
+                        procMan.writeGameInput(remotePlayer, netMan.getInput(remotePlayer));
                         return;
                     }
                 }
                 else
                 {
                     rollMan.loadState ( target, netMan );
+                    // 回滚后立即重新写入当前帧的输入到游戏内存，防止"吃键"
+                    procMan.writeGameInput(localPlayer, netMan.getInput(localPlayer));
+                    procMan.writeGameInput(remotePlayer, netMan.getInput(remotePlayer));
                 }
             }
 
@@ -769,6 +784,10 @@ struct DllMain
                     *CC_SKIP_FRAMES_ADDR = 1;
 
                     LOG_SYNC ( "Reinputs: 0x%04x 0x%04x", netMan.getRawInput ( 1 ), netMan.getRawInput ( 2 ) );
+
+                    // 回滚后立即重新写入当前帧的输入到游戏内存，防止"吃键"
+                    procMan.writeGameInput(localPlayer, netMan.getInput(localPlayer));
+                    procMan.writeGameInput(remotePlayer, netMan.getInput(remotePlayer));
 
                     --rollbackTimer;
                     return;
